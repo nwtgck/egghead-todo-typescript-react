@@ -4,4 +4,9 @@ interface AddTodoAction{
     text : string;
 }
 
-export type TodoAppAction = AddTodoAction
+interface ToggleTodoAction{
+    type: "TOGGLE_TODO";
+    id  : number;
+}
+
+export type TodoAppAction = AddTodoAction | ToggleTodoAction;

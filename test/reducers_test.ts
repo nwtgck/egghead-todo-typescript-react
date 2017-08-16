@@ -21,7 +21,43 @@ describe('TODO list reducers', () => {
         assert.deepEqual(
             todosReducer(stateBefore, action),
             stateAfter
-        )
+        );
+    });
+
+    it('TOGGOLE_TODO', () => {
+        const stateBefore: TodoItem[]  = [
+            {
+                id: 0,
+                text: 'Learn Redux',
+                completed: false
+            },
+            {
+                id: 1,
+                text: 'Go shopping',
+                completed: false
+            }
+        ];
+        const action     : TodoAppAction = {
+            type: "TOGGLE_TODO",
+            id  : 1,
+        };
+        const stateAfter: TodoItem[]  = [
+            {
+                id: 0,
+                text: 'Learn Redux',
+                completed: false
+            },
+            {
+                id: 1,
+                text: 'Go shopping',
+                completed: true
+            }
+        ];
+
+        assert.deepEqual(
+            todosReducer(stateBefore, action),
+            stateAfter
+        );
     });
 
 });
