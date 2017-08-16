@@ -33,6 +33,7 @@
     "immutable": "^3.8.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "ts-copyable": "0.0.3"
   }
 }

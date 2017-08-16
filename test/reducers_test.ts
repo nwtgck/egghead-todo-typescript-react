@@ -2,6 +2,7 @@ import * as assert     from 'power-assert';
 import {List}          from "immutable"
 import {todosReducer}  from '../src/reducers'
 import {TodoAppAction} from "../src/actions";
+import {TodoItem}      from "../src/datatypes";
 
 describe('TODO list reducers', () => {
     it('ADD_TODO', () => {
@@ -12,11 +13,7 @@ describe('TODO list reducers', () => {
             text: "Learn Redux"
         };
         const stateAfter : List<TodoItem>  = List([
-            {
-                id: 0,
-                text: 'Learn Redux',
-                completed: false
-            }
+            new TodoItem(0, 'Learn Redux', false)
         ]);
 
         assert.deepEqual(
@@ -27,32 +24,16 @@ describe('TODO list reducers', () => {
 
     it('TOGGOLE_TODO', () => {
         const stateBefore: List<TodoItem>  = List([
-            {
-                id: 0,
-                text: 'Learn Redux',
-                completed: false
-            },
-            {
-                id: 1,
-                text: 'Go shopping',
-                completed: false
-            }
+            new TodoItem(0, 'Learn Redux', false),
+            new TodoItem(1, 'Go shopping', false)
         ]);
         const action     : TodoAppAction = {
             type: "TOGGLE_TODO",
             id  : 1,
         };
-        const stateAfter: List<TodoItem>  = List([
-            {
-                id: 0,
-                text: 'Learn Redux',
-                completed: false
-            },
-            {
-                id: 1,
-                text: 'Go shopping',
-                completed: true
-            }
+        const stateAfter: List<TodoItem>  =List([
+            new TodoItem(0, 'Learn Redux', false),
+            new TodoItem(1, 'Go shopping', true)
         ]);
 
         assert.deepEqual(
