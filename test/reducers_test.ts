@@ -1,31 +1,32 @@
 import * as assert     from 'power-assert';
+import {List}          from "immutable"
 import {todosReducer}  from '../src/reducers'
 import {TodoAppAction} from "../src/actions";
 
 describe('TODO list reducers', () => {
     it('ADD_TODO', () => {
-        const stateBefore: TodoItem[] = [];
+        const stateBefore: List<TodoItem> = List([]);
         const action     : TodoAppAction = {
             type: "ADD_TODO",
             id  : 0,
             text: "Learn Redux"
         };
-        const stateAfter : TodoItem[]  = [
+        const stateAfter : List<TodoItem>  = List([
             {
                 id: 0,
                 text: 'Learn Redux',
                 completed: false
             }
-        ];
+        ]);
 
         assert.deepEqual(
-            todosReducer(stateBefore, action),
-            stateAfter
+            todosReducer(stateBefore, action).toJS(),
+            stateAfter.toJS()
         );
     });
 
     it('TOGGOLE_TODO', () => {
-        const stateBefore: TodoItem[]  = [
+        const stateBefore: List<TodoItem>  = List([
             {
                 id: 0,
                 text: 'Learn Redux',
@@ -36,12 +37,12 @@ describe('TODO list reducers', () => {
                 text: 'Go shopping',
                 completed: false
             }
-        ];
+        ]);
         const action     : TodoAppAction = {
             type: "TOGGLE_TODO",
             id  : 1,
         };
-        const stateAfter: TodoItem[]  = [
+        const stateAfter: List<TodoItem>  = List([
             {
                 id: 0,
                 text: 'Learn Redux',
@@ -52,11 +53,11 @@ describe('TODO list reducers', () => {
                 text: 'Go shopping',
                 completed: true
             }
-        ];
+        ]);
 
         assert.deepEqual(
-            todosReducer(stateBefore, action),
-            stateAfter
+            todosReducer(stateBefore, action).toJS(),
+            stateAfter.toJS()
         );
     });
 
