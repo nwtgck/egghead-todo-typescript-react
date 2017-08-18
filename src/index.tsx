@@ -19,7 +19,7 @@ interface State {
 }
 
 let nextTodId = 0;
-class App extends React.Component<Props, State> {
+class TodoApp extends React.Component<Props, State> {
 
   input = null;
 
@@ -57,7 +57,7 @@ class App extends React.Component<Props, State> {
 }
 
 const render = () => {
-    ReactDOM.render(<App todos={store.getState().todos}/>, document.getElementById('root'));
+    ReactDOM.render(<TodoApp todos={store.getState().todos}/>, document.getElementById('root'));
 };
 
 store.subscribe(render);
