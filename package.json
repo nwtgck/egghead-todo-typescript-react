@@ -34,6 +34,8 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "redux": "^3.7.2",
-    "ts-copyable": "0.0.3"
+    "ts-copyable": "0.0.3",
+    "typescript-fsa": "^2.4.0",
+    "typescript-fsa-reducers": "^0.4.4"
   }
 }

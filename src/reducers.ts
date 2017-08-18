@@ -1,27 +1,26 @@
-import {List}          from "immutable";
-import {TodoAppAction} from "./actions";
-import {TodoItem}      from "./datatypes"
+import {reducerWithInitialState} from "typescript-fsa-reducers";
 
-export const todosReducer = (state: List<TodoItem> = List(), action: TodoAppAction): List<TodoItem> => {
-    switch (action.type){
-        case "ADD_TODO":
-            return state.push(new TodoItem(
-                action.id,
-                action.text,
-                false
-            ));
+import {List}               from "immutable";
+import {TodoItem}           from "./datatypes";
+import * as actionCreators from "./actionCreators";
 
-        case "TOGGLE_TODO":
-            return state
-                .map((item) => {
-                    if(item.id === action.id) {
-                        return item.mapCopy({completed: prev => !prev})
-                    } else {
-                        return item;
-                    }
-                })
-                .toList();
-        default:
-            return state;
-    }
-};
+
+export const todosReducer = reducerWithInitialState(List<TodoItem>())
+    .case(actionCreators.addTodo, (state, payload) => {
+        return state.push(new TodoItem(
+            payload.id,
+            payload.text,
+            false
+        ))
+    })
+    .case(actionCreators.toggleTodo, (state, payload) => {
+        return state
+            .map((item) => {
+                if(item.id === payload.id) {
+                    return item.mapCopy({completed: prev => !prev})
+                } else {
+                    return item;
+                }
+            })
+            .toList();
+    });
