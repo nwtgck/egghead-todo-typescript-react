@@ -27,16 +27,46 @@ class FilterLink extends React.Component<{filter: Filter, currentFilter: Filter,
     }
 }
 
+class Todo extends React.Component<{onClick: () => void, completed: boolean, text: string}, {}>{
+    render(){
+        return (
+            <li onClick={this.props.onClick}
+                style={{
+                    textDecoration: this.props.completed ?
+                        'line-through': 'none'
+                }}
+            >
+            {this.props.text}
+            </li>
+        );
+    }
+}
 
+class TodoList extends React.Component<{todos: List<TodoItem>, onTodoClick: (id: number) => any}, {}> {
+    render(){
+        return (
+            <ul>
+                {this.props.todos.map(todo =>
+                    <Todo
+                        key      ={todo.id}
+                        onClick  ={() => this.props.onTodoClick(todo.id)}
+                        completed={todo.completed}
+                        text     ={todo.text}
+                    />
+                )}
+            </ul>
+        );
+    }
+}
 
-const getVisibleTodos = (todos: List<TodoItem>, filter: Filter) => {
+const getVisibleTodos = (todos: List<TodoItem>, filter: Filter): List<TodoItem> => {
     switch (filter){
         case 'SHOW_ALL':
             return todos;
         case 'SHOW_ACTIVE':
-            return todos.filter(todo => !todo.completed);
+            return todos.filter(todo => !todo.completed).toList();
         case 'SHOW_COMPLETED':
-            return todos.filter(todo => todo.completed);
+            return todos.filter(todo => todo.completed).toList();
     }
 };
 let nextTodId = 0;
@@ -59,25 +89,20 @@ class TodoApp extends React.Component<{todos: List<TodoItem>, visibilityFilter: 
                 text: this.input.value
             }));
             this.input.value = '';
-          }}>Add Todo</button>
-        <ul>
-            {visibleTodos.map(todo =>
-                <li key={todo.id}
-                    onClick={() => {
-                        store.dispatch(actionCreator.toggleTodo({
-                            id: todo.id
-                        }));
-                    }}
-                    style={{
-                        textDecoration: todo.completed ?
-                            'line-through': 'none'
-                    }}
-                >
-                    {todo.text}
-                </li>
-            )}
-        </ul>
-      <p>
+          }}>
+            Add Todo
+        </button>
+
+        <TodoList
+            todos      ={visibleTodos}
+            onTodoClick={id => {
+                store.dispatch(actionCreator.toggleTodo({
+                    id: id
+                }));
+            }}
+        />
+
+        <p>
           Show:
           {' '}
           <FilterLink
@@ -95,7 +120,7 @@ class TodoApp extends React.Component<{todos: List<TodoItem>, visibilityFilter: 
               currentFilter={visibilityFilter}
           >Completed</FilterLink>
           {' '}
-      </p>
+        </p>
       </div>
     );
   }
