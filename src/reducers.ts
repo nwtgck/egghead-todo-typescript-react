@@ -1,11 +1,13 @@
+import {combineReducers}         from "redux";
 import {reducerWithInitialState} from "typescript-fsa-reducers";
+import {List}                    from "immutable";
 
-import {List}               from "immutable";
 import {TodoItem}           from "./datatypes";
 import * as actionCreators from "./actionCreators";
+import {Filter} from "./actionCreators";
 
 
-export const todosReducer = reducerWithInitialState(List<TodoItem>())
+export const todosReducer = reducerWithInitialState<List<TodoItem>>(List<TodoItem>())
     .case(actionCreators.addTodo, (state, payload) => {
         return state.push(new TodoItem(
             payload.id,
@@ -24,3 +26,13 @@ export const todosReducer = reducerWithInitialState(List<TodoItem>())
             })
             .toList();
     });
+
+export const visibilityFilterReducer = reducerWithInitialState<Filter>("SHOW_ALL")
+    .case(actionCreators.setVisibilityFilter, (state, payload) => {
+        return payload.filter;
+    });
+
+export const todoAppReducer = combineReducers({
+    todos           : todosReducer,
+    visibilityFilter: visibilityFilterReducer
+});
