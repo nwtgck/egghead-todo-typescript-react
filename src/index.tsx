@@ -11,47 +11,102 @@ import {ReactNode} from "react";
 
 const store = createStore(todoAppReducer);
 
-class FilterLink extends React.Component<{filter: Filter, currentFilter: Filter, onClick: (filter: Filter) => void, children: ReactNode}, {}> { // (ReactNode from: https://github.com/Microsoft/TypeScript/issues/6471)
-    render (){
-        if(this.props.filter === this.props.currentFilter){
-            return <span>{this.props.children}</span>
-        } else {
-            return (
-                <a href="#" onClick={e => {
-                    e.preventDefault();
-                    this.props.onClick(this.props.filter);
-                }}>{this.props.children}</a>
-            );
-        }
+// (component)
+const Link = ({active, onClick, children} : {active: boolean, onClick: () => void, children: ReactNode}) => { // (ReactNode from: https://github.com/Microsoft/TypeScript/issues/6471)
+    if (active) {
+        return <span>{children}</span>
+    } else {
+        return (
+            <a href="#" onClick={e => {
+                e.preventDefault();
+                onClick();
+            }}>{children}</a>
+        );
+    }
+};
 
+// (container)
+class FilterLink extends React.Component<{filter: Filter, children: ReactNode}, {}> {
+
+    unsubscribe = null;
+
+    componentDidMount(){
+        this.unsubscribe = store.subscribe(() => this.forceUpdate());
+    }
+
+    componentWillUnmount(){
+        this.unsubscribe();
+    }
+
+    render(){
+        const state = store.getState();
+        return (
+            <Link
+                active={this.props.filter == state.visibilityFilter}
+                onClick={() =>
+                    store.dispatch(actionCreator.setVisibilityFilter({
+                        filter: this.props.filter
+                    }))
+                }
+            >
+            {this.props.children}
+            </Link>
+        );
     }
 }
 
-class Footer extends React.Component<{visibilityFilter: Filter, onFilterClick: (filter: Filter) => void}, {}> {
+
+class Footer extends React.Component<{}, {}> {
     render(){
         return (
             <p>
                 Show:
                 {' '}
                 <FilterLink
-                    filter       ={'SHOW_ALL'}
-                    currentFilter={this.props.visibilityFilter}
-                    onClick      ={this.props.onFilterClick}
+                    filter={'SHOW_ALL'}
                 >All</FilterLink>
                 {' '}
                 <FilterLink
-                    filter       ={'SHOW_ACTIVE'}
-                    currentFilter={this.props.visibilityFilter}
-                    onClick      ={this.props.onFilterClick}
+                    filter={'SHOW_ACTIVE'}
                 >Active</FilterLink>
                 {' '}
                 <FilterLink
-                    filter       ={'SHOW_COMPLETED'}
-                    currentFilter={this.props.visibilityFilter}
-                    onClick      ={this.props.onFilterClick}
+                    filter={'SHOW_COMPLETED'}
                 >Completed</FilterLink>
                 {' '}
             </p>
+        );
+    }
+}
+
+// (container)
+class VisibleTodoList extends React.Component<{}, {}> {
+
+    unsubscribe = null;
+
+    componentDidMount(){
+        this.unsubscribe = store.subscribe(() => this.forceUpdate());
+    }
+
+    componentWillUnmount(){
+        this.unsubscribe();
+    }
+
+    render(){
+        const state = store.getState();
+
+        return (
+            <TodoList
+                todos={getVisibleTodos(
+                    state.todos,
+                    state.visibilityFilter
+                )}
+                onTodoClick={id => {
+                    store.dispatch(actionCreator.toggleTodo({
+                        id: id
+                    }));
+                }}
+            />
         );
     }
 }
@@ -89,7 +144,7 @@ class TodoList extends React.Component<{todos: List<TodoItem>, onTodoClick: (id:
     }
 }
 
-class AddTodo extends React.Component<{onAddClick: (text: string) => void}, {}> {
+class AddTodo extends React.Component<{}, {}> {
 
     input = null;
 
@@ -98,7 +153,10 @@ class AddTodo extends React.Component<{onAddClick: (text: string) => void}, {}> 
             <div>
                 <input ref={node => this.input = node}/>
                 <button onClick={() => {
-                    this.props.onAddClick(this.input.value);
+                    store.dispatch(actionCreator.addTodo({
+                        id  : nextTodId++,
+                        text: this.input.value
+                    }));
                     this.input.value = '';
                 }}>
                     Add Todo
@@ -121,43 +179,16 @@ const getVisibleTodos = (todos: List<TodoItem>, filter: Filter): List<TodoItem> 
 let nextTodId = 0;
 const TodoApp = ({todos, visibilityFilter}: {todos: List<TodoItem>, visibilityFilter: Filter}) => (
     <div>
-        <AddTodo
-            onAddClick={text =>
-                store.dispatch(actionCreator.addTodo({
-                    id  : nextTodId++,
-                    text: text
-                }))
-            }
-        />
-
-        <TodoList
-            todos      ={getVisibleTodos(todos, visibilityFilter)}
-            onTodoClick={id => {
-                store.dispatch(actionCreator.toggleTodo({
-                    id: id
-                }));
-            }}
-        />
-
-        <Footer
-            visibilityFilter={visibilityFilter}
-            onFilterClick   ={filter =>
-                store.dispatch(actionCreator.setVisibilityFilter({
-                    filter: filter
-                }))
-            }
-        />
+        <AddTodo />
+        <VisibleTodoList />
+        <Footer/>
     </div>
 );
 
-const render = () => {
-    ReactDOM.render(<TodoApp
-        todos={store.getState().todos}
-        visibilityFilter={store.getState().visibilityFilter}
-    />, document.getElementById('root'));
-};
 
-store.subscribe(render);
-render();
+ReactDOM.render(<TodoApp
+    todos={store.getState().todos}
+    visibilityFilter={store.getState().visibilityFilter}
+/>, document.getElementById('root'));
 
 
