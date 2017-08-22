@@ -1,4 +1,4 @@
-# Type-safe TODO list app in React + Redux + TypeScript
+# Type-safe TODO list app in TypeScript + React + Redux 
 
 A Type-safe TODO list application written in TypeScript following by the wonderful lessons of [egghead.io](https://egghead.io/).
 
@@ -41,7 +41,7 @@ Then, you can open `./build/index.html` by your browser.
 ## Type safety
 
 `Filter`, for example, is seems to be just string.
-But only `'SHOW_ALL'`, `'SHOW_ACTIVE'` and `'SHOW_COMPLETED''` is acceptable as `Filter` because `Filter` type is defined bellow. 
+But only `'SHOW_ALL'`, `'SHOW_ACTIVE'` and `'SHOW_COMPLETED''` are acceptable as `Filter` because `Filter` type is defined bellow. 
 
 ```ts
 type Filter = 'SHOW_ALL' | 'SHOW_ACTIVE' | 'SHOW_COMPLETED';
