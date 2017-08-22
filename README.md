@@ -2,12 +2,19 @@
 
 A Type-safe TODO list application written in TypeScript following by the wonderful lessons of [egghead.io](https://egghead.io/).
 
-## egghead.io Redux lessons
+<img src="demo-img/demo1.gif"></img>
+
+## Awesome egghead.io Redux lessons!
 
 This repository is TypeScript version of the lessons bellow.
 
+
 https://egghead.io/courses/getting-started-with-redux
 
+
+## Demo page
+
+https://nwtgck.github.io/egghead-todo-typescript-react/build/
 
 ## How to run
 
