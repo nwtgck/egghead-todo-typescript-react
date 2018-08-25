@@ -1,5 +1,7 @@
 # Type-safe TODO list app in TypeScript + React + Redux 
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/nwtgck/egghead-todo-typescript-react.svg)](https://greenkeeper.io/)
+
 A Type-safe TODO list application written in TypeScript following by the wonderful lessons of [egghead.io](https://egghead.io/).
 
 <img src="demo-img/demo1.gif"></img>
